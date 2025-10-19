@@ -1,0 +1,23 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: verdantia
+      POSTGRES_PASSWORD: verdantia
+      POSTGRES_DB: verdantia
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  api:
+    build: ../api
+    environment:
+      DATABASE_URL: postgresql+psycopg://verdantia:verdantia@db:5432/verdantia
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+volumes:
+  db-data:

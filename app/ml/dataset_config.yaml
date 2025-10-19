@@ -1,0 +1,9 @@
+dataset:
+  name: verdantia_species_v0
+  train_path: data/train
+  val_path: data/val
+  image_size: 320
+  classes:
+    - ficus_lyrata
+    - monstera_deliciosa
+    - schefflera_arboricola
