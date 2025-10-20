@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, HTTPException
 from typing import List
 from ..models import DiagnosisIssue, DiagnosisAction
 from ..services.weather import WeatherService, MockWeatherService
@@ -53,9 +53,9 @@ def get_alerts(city: str = Query(..., description="City name for weather alerts"
             }
         }
     
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=f"Invalid city name: {str(e)}")
+    except ConnectionError as e:
+        raise HTTPException(status_code=503, detail="Weather service unavailable")
     except Exception as e:
-        return {
-            "city": city,
-            "alerts": [],
-            "error": f"Unable to fetch weather data: {str(e)}"
-        }
+        raise HTTPException(status_code=500, detail="Internal server error")

@@ -11,7 +11,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'PlantDetail'>;
 export default function PlantDetailScreen({ route }: Props) {
   const { id, speciesId } = route.params;
   const { data: carePlan, isLoading: careLoading, error: careError } = useCare(id);
-  const { data: alerts, isLoading: alertsLoading } = useAlerts('Keller');
+  const { data: alerts, isLoading: alertsLoading, error: alertsError } = useAlerts('Keller');
 
   const formatDate = (dateString: string) => {
     try {
@@ -93,15 +93,26 @@ export default function PlantDetailScreen({ route }: Props) {
             </View>
           )}
           
-          {alerts && alerts.alerts.length > 0 ? (
+          {alertsError && (
+            <View style={styles.errorContainer}>
+              <Text style={styles.errorText}>
+                Failed to load alerts. Please try again.
+              </Text>
+            </View>
+          )}
+          
+          {alerts?.alerts?.length > 0 ? (
             <View style={styles.alertsContainer}>
               {alerts.alerts.map((alert, index) => (
                 <View key={index} style={styles.alertItem}>
-                  <Text style={styles.alertType}>{alert.type.replace('_', ' ').toUpperCase()}</Text>
-                  <Text style={styles.alertMessage}>{alert.message}</Text>
+                  <Text style={styles.alertType}>{alert.type?.replace('_', ' ').toUpperCase() || 'ALERT'}</Text>
+                  <Text style={styles.alertMessage}>{alert.message || 'No message available'}</Text>
                   <Text style={styles.alertSeverity}>
-                    Severity: {alert.severity}
+                    Severity: {alert.severity || 'unknown'}
                   </Text>
+                  {alert.recommendations && alert.recommendations.length > 0 && (
+                    <Text style={styles.alertRecommendations}>Recommendations: {alert.recommendations.join(', ')}</Text>
+                  )}
                 </View>
               ))}
             </View>
