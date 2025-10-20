@@ -91,7 +91,7 @@ git init
 git add .
 git commit -m "feat: verdantia scaffold"
 git branch -M main
-git remote add origin https://github.com/YOURUSER/verdantia.git
+git remote add origin https://github.com/batkisn33/verdantia.git
 git push -u origin main
 ```
 
