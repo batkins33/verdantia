@@ -2,38 +2,67 @@
 
 **Verdantia — Intelligent Plant Care, Naturally.**
 
-This repo is a fully-populated scaffold for a plant identification & care app:
-- **Mobile (Expo React Native)**
-- **API (FastAPI)**
+A full-stack plant identification & care app with:
+- **Mobile (Expo React Native + TypeScript)**
+- **API (FastAPI with proper package structure)**
 - **ML (stubs for training/export)**
 - **Infra (Docker, GitHub Actions, docker-compose)**
 
 ## Quickstart
 
-### 1) API
+### Using Makefile (Recommended)
 ```bash
-cd app/api
+# Start API server
+make api.run
+
+# Start mobile app
+make mobile.start
+
+# Start with Docker Compose
+make compose.up
+
+# Run tests
+make api.test
+
+# View logs
+make compose.logs
+```
+
+### Manual Commands
+
+#### 1) API
+```bash
+cd verdantia/app/api
 python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 uvicorn main:app --reload --port 8080
 ```
-Open Swagger at: http://localhost:808:8080/docs
+Open Swagger at: http://localhost:8080/docs
 
-### 2) Mobile (Expo)
+#### 2) Mobile (Expo + TypeScript)
 ```bash
-cd app/mobile
+cd verdantia/app/mobile
 npm install
 npx expo start
 ```
-Open on device or emulator. The mock "Plant Detail" screen is wired.
+Open on device or emulator. Features photo upload, API integration, and offline retry.
 
-### 3) Docker Compose (API + Postgres)
+#### 3) Docker Compose (API + Postgres)
 ```bash
-cd app/infra
+cd verdantia/app/infra
 docker compose up -d
 ```
 API on http://localhost:8080 (first run installs deps).
+
+## OpenAPI Refresh
+
+To update the OpenAPI specification:
+
+1. Start the API server: `make api.run`
+2. Visit http://localhost:8080/openapi.json
+3. Save the JSON to `docs/development/openapi.json`
+4. Optionally generate TypeScript types from the schema
 
 ## Repo Layout
 ```

@@ -2,28 +2,60 @@ name: API CI
 
 on:
   push:
+    branches: [ main, develop ]
     paths:
-      - 'app/api/**'
+      - 'verdantia/app/api/**'
   pull_request:
+    branches: [ main ]
     paths:
-      - 'app/api/**'
+      - 'verdantia/app/api/**'
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Install deps
-        run: |
-          cd app/api
-          python -m venv .venv
-          source .venv/bin/activate
-          pip install -r requirements.txt
-      - name: Run tests
-        run: |
-          cd app/api
-          source .venv/bin/activate
-          pytest -q
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('verdantia/app/api/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
+    - name: Install dependencies
+      working-directory: verdantia/app/api
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Lint with ruff
+      working-directory: verdantia/app/api
+      run: |
+        ruff check verdantia_api/
+    
+    - name: Test with pytest
+      working-directory: verdantia/app/api
+      run: |
+        pytest --maxfail=1 --disable-warnings -q --cov=verdantia_api --cov-report=xml
+    
+    - name: Upload coverage reports
+      uses: codecov/codecov-action@v3
+      with:
+        file: verdantia/app/api/coverage.xml
+        flags: api
+        name: api-coverage
+    
+    - name: Upload pytest results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: pytest-results
+        path: verdantia/app/api/pytest-results.xml

@@ -18,6 +18,7 @@ services:
       - "8080:8080"
     depends_on:
       - db
+    # Comment: Use 'docker compose logs -f api' to follow API logs
 
 volumes:
   db-data:
