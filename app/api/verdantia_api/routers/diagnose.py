@@ -93,4 +93,8 @@ async def diagnose(
     finally:
         # Clean up temporary file
         if temp_file and os.path.exists(temp_file_path):
-            os.unlink(temp_file_path)
+            try:
+                os.unlink(temp_file_path)
+            except OSError:
+                # Ignore cleanup errors to avoid masking original exceptions
+                pass

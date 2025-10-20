@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
@@ -10,7 +10,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
 export default function HomeScreen({ navigation }: Props) {
   const { getPendingCount, queue } = useQueueStore();
-  const pendingCount = getPendingCount();
+  const pendingCount = useMemo(() => getPendingCount(), [queue]);
 
   const handleSync = () => {
     if (pendingCount === 0) {
